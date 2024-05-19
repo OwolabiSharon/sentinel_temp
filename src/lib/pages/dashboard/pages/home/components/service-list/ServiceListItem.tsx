@@ -6,10 +6,10 @@ import { IconMapping } from '~/lib/utils';
 type ServiceListItemProps = {
   data: any;
   name: string;
-  icon_url:string
+  icon_url: string;
   lastOutage: string;
   latest_status: any;
-  up: any
+  up: any;
   onClick: (data: any) => void;
 };
 const ServiceListItem = ({

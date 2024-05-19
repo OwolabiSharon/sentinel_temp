@@ -55,7 +55,7 @@ type CheckCardProps = {
   checkBoxProps?: CheckboxProps;
   showContentWhenChecked?: ReactNode;
   cardProps?: CardProps;
-  onChange?: any
+  onChange?: any;
 };
 export const CheckCard = ({
   id,
@@ -103,7 +103,11 @@ export const CheckCard = ({
       >
         <HStack align="center">
           {icon && typeof icon === 'string' ? (
-            <img src={icon} alt="Icon" style={{ width: '1.25rem', height: 'auto' }} />
+            <img
+              src={icon}
+              alt="Icon"
+              style={{ width: '1.25rem', height: 'auto' }}
+            />
           ) : (
             icon && <Icon boxSize="1.25rem" {...iconProps} as={icon} />
           )}

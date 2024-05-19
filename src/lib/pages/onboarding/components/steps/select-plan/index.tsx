@@ -20,7 +20,8 @@ const SelectPlan = ({
 }: StepComponentProps & SelectPlanProps) => {
   const [plan, setPlan] = useState(initialValue?.name || '');
   const [planCheckout, setPlanCheckout] = useState('');
-  const handleClick = () => cb()({ plan: {name: plan, checkoutLink: planCheckout}, step: 1 });
+  const handleClick = () =>
+    cb()({ plan: { name: plan, checkoutLink: planCheckout }, step: 1 });
   return (
     <FadeIn
       props={{
@@ -43,8 +44,10 @@ const SelectPlan = ({
                 'Email Notifications',
               ]}
               updateValue={() => {
-                setPlan('free')
-                setPlanCheckout('https://sentinelco.lemonsqueezy.com/buy/f69a9748-a103-4806-929a-cf94f0820641')
+                setPlan('free');
+                setPlanCheckout(
+                  'https://sentinelco.lemonsqueezy.com/buy/f69a9748-a103-4806-929a-cf94f0820641'
+                );
               }}
             />
 
@@ -58,8 +61,10 @@ const SelectPlan = ({
                 'Email Notifications',
               ]}
               updateValue={() => {
-                setPlan('Pro')
-                setPlanCheckout('https://sentinelco.lemonsqueezy.com/buy/f69a9748-a103-4806-929a-cf94f0820641')
+                setPlan('Pro');
+                setPlanCheckout(
+                  'https://sentinelco.lemonsqueezy.com/buy/f69a9748-a103-4806-929a-cf94f0820641'
+                );
               }}
             />
           </VStack>

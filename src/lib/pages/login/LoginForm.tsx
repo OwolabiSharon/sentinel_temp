@@ -1,18 +1,17 @@
 import { VStack, Text, useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+
+import supabase from '../../supabase';
 import { PrimaryButton } from '~/lib/components/button';
 import ChakraLink from '~/lib/components/ChakraLink';
 import FormInput from '~/lib/components/form/FormInput';
-
-import supabase from '../../supabase';
-
 
 const SignupForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
-  const toast = useToast(); 
+  const toast = useToast();
 
   const handleLogin = async () => {
     try {
@@ -36,7 +35,7 @@ const SignupForm = () => {
 
       if (error) {
         console.error('login failed:', error);
-        let errorMessage = 'Login failed. Please check your credentials.';
+        const errorMessage = 'Login failed. Please check your credentials.';
 
         toast({
           title: 'Error',
@@ -69,9 +68,6 @@ const SignupForm = () => {
       });
     }
   };
-
-
-  
 
   return (
     <>

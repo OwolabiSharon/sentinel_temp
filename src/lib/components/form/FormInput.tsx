@@ -27,7 +27,7 @@ const FormInput = ({
   labelProps,
   inputRef,
   required,
-  isDisabled, 
+  isDisabled,
 }: FormInputProps) => {
   const updatedInputProps: InputProps = {
     rounded: 'md',
@@ -55,7 +55,12 @@ const FormInput = ({
   return (
     <FormControl mb={mb === undefined ? 2 : mb}>
       {label && <FormLabel {...updatedLabelProps}>{label}</FormLabel>}
-      <Input disabled={isDisabled} {...updatedInputProps} ref={inputRef} required={required} />
+      <Input
+        disabled={isDisabled}
+        {...updatedInputProps}
+        ref={inputRef}
+        required={required}
+      />
       {children}
     </FormControl>
   );

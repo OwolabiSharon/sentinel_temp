@@ -1,51 +1,53 @@
 import React, { useState } from 'react';
+
+import supabase from '../../supabase';
 import { DarkButton } from '../button';
 import FormInput from '../form/FormInput';
 import FadeIn from '../motion/fade-in';
-import supabase from '../../supabase';
 
 const TestWebHook = () => {
-  const userDataString = typeof window !== 'undefined' ? localStorage.getItem('fullAuthUserData') : null;
+  const userDataString =
+    typeof window !== 'undefined'
+      ? localStorage.getItem('fullAuthUserData')
+      : null;
   const data = userDataString ? JSON.parse(userDataString) : null;
-  
+
   // State for storing the input value
   const [destinationURL, setDestinationURL] = useState('');
 
-
   // Function to handle button click
-  const handleButtonClick = async() => {
+  const handleButtonClick = async () => {
     try {
       const { data: orgData, error } = await supabase
-      .from('organization')
+        .from('organization')
         .update({
           webhook_url: destinationURL,
+        })
+        .eq('id', data?.organization.id);
 
-      })
-      .eq('id', data?.organization.id);
+      if (error) {
+        console.error('Error updating user:', error.message);
+        return null;
+      }
+      const samplePayload = {
+        event: 'test',
+      };
 
-    if (error) {
-      console.error('Error updating user:', error.message);
-      return null;
-    }
-    const samplePayload = {
-      event: "test"
-    };
+      const response = await fetch(destinationURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(samplePayload),
+      });
 
-    const response = await fetch(destinationURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(samplePayload),
-    });
+      if (!response.ok) {
+        console.error('Error sending webhook request:', response.statusText);
+        return null;
+      }
 
-    if (!response.ok) {
-      console.error('Error sending webhook request:', response.statusText);
-      return;
-    }
-
-    console.log('Webhook request sent successfully');
-    return response
+      console.log('Webhook request sent successfully');
+      return response;
     } catch (error) {
       console.log(error);
       return null;
@@ -68,11 +70,13 @@ const TestWebHook = () => {
             rounded: 'md',
             fontSize: ['14'],
             value: destinationURL,
-            onChange: (e) => setDestinationURL(e.target.value)
+            onChange: (e) => setDestinationURL(e.target.value),
           }}
           required
         />
-        <DarkButton width={{ base: 24 }} onClick={handleButtonClick}>Test</DarkButton>
+        <DarkButton width={{ base: 24 }} onClick={handleButtonClick}>
+          Test
+        </DarkButton>
       </form>
     </FadeIn>
   );

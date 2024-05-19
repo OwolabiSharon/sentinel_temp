@@ -1,15 +1,16 @@
 import { HStack, VStack } from '@chakra-ui/react';
 import type { ChangeEvent } from 'react';
 import { useReducer } from 'react';
-import supabase from '../../../../../../supabase';
 
+import supabase from '../../../../../../supabase';
 import { PrimaryButton } from '~/lib/components/button';
 import FormInput from '~/lib/components/form/FormInput';
 
-
-const userDataString = typeof window !== 'undefined' ? localStorage.getItem('fullAuthUserData') : null;
+const userDataString =
+  typeof window !== 'undefined'
+    ? localStorage.getItem('fullAuthUserData')
+    : null;
 const data = userDataString ? JSON.parse(userDataString) : null;
-
 
 const userInfo = {
   first_name: data?.first_name,
@@ -39,19 +40,19 @@ const AccountInformationForm = () => {
   const handleUpdate = async () => {
     try {
       const { data: response, error } = await supabase
-      .from('users')
+        .from('users')
         .update({
           first_name: form.first_name,
           last_name: form.last_name,
-          phone_number: form.phone_number
-      })
-      .eq('id', data?.id);
+          phone_number: form.phone_number,
+        })
+        .eq('id', data?.id);
 
-    if (error) {
-      console.error('Error updating user:', error.message);
-      return null;
-    }
-    return response
+      if (error) {
+        console.error('Error updating user:', error.message);
+        return null;
+      }
+      return response;
     } catch (error) {
       console.log(error);
       return null;
@@ -91,7 +92,7 @@ const AccountInformationForm = () => {
             value: form.email,
             isRequired: true,
             onChange: updateForm,
-            isDisabled: true
+            isDisabled: true,
           }}
         />
         <FormInput
@@ -102,7 +103,7 @@ const AccountInformationForm = () => {
             value: form.company,
             isRequired: true,
             onChange: updateForm,
-            isDisabled: true
+            isDisabled: true,
           }}
         />
         <FormInput

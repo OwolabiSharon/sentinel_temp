@@ -21,7 +21,13 @@ const IndexPage = () => {
   const [emails, setEmails] = useState([]);
   const [isValidEmail, setIsValidEmail] = useState(true); // State to track email validation
 
-  function handleKeyDown(e) {
+  function validateEmail(email: any) {
+    // Email validation regex
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  }
+
+  function handleKeyDown(e: any) {
     if (e.key !== 'Enter') return;
     const { value } = e.target;
     if (!value.trim()) return;
@@ -34,14 +40,8 @@ const IndexPage = () => {
     e.target.value = '';
   }
 
-  function removeEmail(index) {
+  function removeEmail(index: any) {
     setEmails(emails.filter((el, i) => i !== index));
-  }
-
-  function validateEmail(email) {
-    // Email validation regex
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email);
   }
 
   return (

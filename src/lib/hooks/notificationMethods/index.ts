@@ -12,7 +12,7 @@ const useNotificationMethods = () => {
     name: string;
     icon: IconType;
     iconProps?: IconProps;
-    type?: string
+    type?: string;
   }[] = [
     {
       name: 'Webhook',
@@ -24,20 +24,20 @@ const useNotificationMethods = () => {
     {
       name: 'Email',
       icon: BsMailbox2,
+    },
+    {
+      name: 'slack',
+      icon: BsSlack,
+      type: 'coming soon',
+    },
+    {
+      name: 'WhatsApp',
+      icon: BsWhatsapp,
+      iconProps: {
+        color: 'whatsapp.600',
       },
-      {
-        name: 'slack',
-        icon: BsSlack,
-        type: 'coming soon',
-      },
-      {
-        name: 'WhatsApp',
-        icon: BsWhatsapp,
-        iconProps: {
-          color: 'whatsapp.600',
-        },
-        type: 'coming soon'
-      },
+      type: 'coming soon',
+    },
   ];
 
   return [notificationMethods];

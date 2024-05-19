@@ -8,7 +8,7 @@ type NavItemProps = {
   name: string;
   icon: IconType;
   color: ColorProps['color'];
-  url: string;
+  url?: string;
   active?: boolean;
   onClick?: () => void; // Define onClick prop as a function that takes no arguments and returns void
 };
@@ -32,6 +32,10 @@ const LogoutButton = ({
     }
   };
 
+  const isButton = Boolean(onClick);
+  const Component = isButton ? 'button' : ChakraLink;
+  const componentProps = isButton ? {} : { href: `/dashboard${url}` };
+
   return (
     <HStack
       color={color}
@@ -42,9 +46,9 @@ const LogoutButton = ({
       rounded="base"
       backgroundColor={active ? activeState.backgroundColor : 'transparent'}
       _hover={{ ...activeState, color: 'white' }}
-      as={onClick ? 'button' : ChakraLink} // Render as a button if onClick is provided
-      href={onClick ? undefined : `/dashboard${url}`} // Remove href if onClick is provided
+      as={Component} // Render as a button if onClick is provided
       onClick={handleClick} // Call handleClick function when the button is clicked
+      {...componentProps} // Spread the href prop conditionally
     >
       <Icon as={icon} display="inline" boxSize={6} mr={{ base: 1 }} />
       <Text textTransform="capitalize" lineHeight="150%">

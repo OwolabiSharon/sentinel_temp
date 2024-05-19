@@ -17,7 +17,7 @@ type SubServiceListProps = {
 
 const SubServiceList = ({ service, openSettingsCb }: SubServiceListProps) => {
   const [subServiceData, setSubServiceData] = useState<any[]>([]);
-
+  const router = useRouter();
   useEffect(() => {
     const fetchData = async () => {
       // Perform Supabase query to fetch user subscriptions
@@ -46,17 +46,17 @@ const SubServiceList = ({ service, openSettingsCb }: SubServiceListProps) => {
   }, [service.id]);
 
   const handleUpgradeClick = () => {
-    
-    
     localStorage.setItem('selectedProviderId', service.id);
-    console.log('selectedProviderId set to:', localStorage.getItem('selectedProviderId'));
-    console.log(service.id, "service id that is being passed", service.name);
+    console.log(
+      'selectedProviderId set to:',
+      localStorage.getItem('selectedProviderId')
+    );
+    console.log(service.id, 'service id that is being passed', service.name);
     router.push({
       pathname: '/dashboard/settings',
     });
   };
 
-  const router = useRouter();
   return (
     <Box
       p={{ base: 4 }}

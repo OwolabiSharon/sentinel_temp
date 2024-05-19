@@ -12,10 +12,9 @@ import {
 import type { ReactNode } from 'react';
 import type { IconType } from 'react-icons';
 
+import supabase from '../../../../../../supabase';
 import { RedFilledButton } from '~/lib/components/button';
 import { SectionTitle2 } from '~/lib/components/title';
-import supabase from '../../../../../../supabase';
-
 
 type AlertModalProps = {
   isOpen: boolean;
@@ -25,7 +24,7 @@ type AlertModalProps = {
   text: ReactNode;
   id: any;
   ctaText: string;
-  email?: string
+  email?: string;
 };
 const AlertModal = ({
   isOpen,
@@ -35,40 +34,40 @@ const AlertModal = ({
   text,
   id,
   ctaText,
-  email
+  email,
 }: AlertModalProps) => {
   async function cancelSubscription() {
     // Construct the request URL
     const url = `https://api.lemonsqueezy.com/v1/subscriptions/${id}`;
-  
+
     // Construct the request headers
     const headers = {
-      'Accept': 'application/vnd.api+json',
+      Accept: 'application/vnd.api+json',
       'Content-Type': 'application/vnd.api+json',
-      'Authorization': `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5NGQ1OWNlZi1kYmI4LTRlYTUtYjE3OC1kMjU0MGZjZDY5MTkiLCJqdGkiOiIwMTA2ZDc0MmMyMzY5NzNiZGI5ZTBjZDY5MjhiNDYzMmFmNmM1Yzk4OTVmZDMzNDM3ZTU3YmFlOWQ1YTYyMWY2MmYxZTY4MDAxMjIyMDQ4NCIsImlhdCI6MTcxNDE0MDcyMS44OTc0MTcsIm5iZiI6MTcxNDE0MDcyMS44OTc0MTksImV4cCI6MjAyOTY3MzUyMS44NzUwMSwic3ViIjoiMjI4ODIxMiIsInNjb3BlcyI6W119.LkLDJBgPUeooQtmPsF1ODh28sCh39ZiStolnxmJ6-gUiOQfVLRagwl2PoxuD4RtLQwrSedkMw8TU8TE9-S5xaLnhUofiSn6WiUo-X9YK4VMJaBEah1lV6X9QdkKQnbSjCTUTlw3H8dZsQmkXglSLb3QPMI1skPhoNSEkjOFEAgf5OzVZmrRNonXexgN9WRFtJiHGadBxzbUCMs29zB44yVFdwNMfLMpt_qQNfYgf1E1iHjU9Q1ZVgoJRqlJYubz88RD9MYLi6Zv7W5uNi6cdrD1XwZFI_Fr9SKJz0xxg4V1-N0O1ItWz09Rdl5cNVlpK8T4uBkO0Rg2t23SD842u7VNnEopxiCR2aTyPenB9CJN63qT1hZJrfFRoTMXORh4wZ3FXqFTqycnzpRaXY4iYXWIiIxU4CAHy4W2vz-mZT57TBDstlYuCdNF1jp0vTpKQ8pOyXDI9daEtuy0AQWCycoX1qk9o9T8iNQRxpfvnLSfrBc3tztzi5rj1fm-xiwjJ`,
+      Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5NGQ1OWNlZi1kYmI4LTRlYTUtYjE3OC1kMjU0MGZjZDY5MTkiLCJqdGkiOiIwMTA2ZDc0MmMyMzY5NzNiZGI5ZTBjZDY5MjhiNDYzMmFmNmM1Yzk4OTVmZDMzNDM3ZTU3YmFlOWQ1YTYyMWY2MmYxZTY4MDAxMjIyMDQ4NCIsImlhdCI6MTcxNDE0MDcyMS44OTc0MTcsIm5iZiI6MTcxNDE0MDcyMS44OTc0MTksImV4cCI6MjAyOTY3MzUyMS44NzUwMSwic3ViIjoiMjI4ODIxMiIsInNjb3BlcyI6W119.LkLDJBgPUeooQtmPsF1ODh28sCh39ZiStolnxmJ6-gUiOQfVLRagwl2PoxuD4RtLQwrSedkMw8TU8TE9-S5xaLnhUofiSn6WiUo-X9YK4VMJaBEah1lV6X9QdkKQnbSjCTUTlw3H8dZsQmkXglSLb3QPMI1skPhoNSEkjOFEAgf5OzVZmrRNonXexgN9WRFtJiHGadBxzbUCMs29zB44yVFdwNMfLMpt_qQNfYgf1E1iHjU9Q1ZVgoJRqlJYubz88RD9MYLi6Zv7W5uNi6cdrD1XwZFI_Fr9SKJz0xxg4V1-N0O1ItWz09Rdl5cNVlpK8T4uBkO0Rg2t23SD842u7VNnEopxiCR2aTyPenB9CJN63qT1hZJrfFRoTMXORh4wZ3FXqFTqycnzpRaXY4iYXWIiIxU4CAHy4W2vz-mZT57TBDstlYuCdNF1jp0vTpKQ8pOyXDI9daEtuy0AQWCycoX1qk9o9T8iNQRxpfvnLSfrBc3tztzi5rj1fm-xiwjJ`,
     };
-  
+
     // Construct the request options
     const requestOptions = {
       method: 'DELETE',
-      headers: headers,
+      headers,
     };
-  
+
     try {
       // Send the request to cancel the subscription
       const response = await fetch(url, requestOptions);
-  
+
       // Check if request was successful
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       console.log('Subscription cancelled successfully.');
     } catch (error) {
       console.error('Error cancelling subscription:', error);
     }
   }
-  
+
   return (
     <Modal
       isOpen={isOpen}
@@ -106,7 +105,9 @@ const AlertModal = ({
             >
               Back
             </Button>
-            <RedFilledButton onClick={cancelSubscription}>{ctaText}</RedFilledButton>
+            <RedFilledButton onClick={cancelSubscription}>
+              {ctaText}
+            </RedFilledButton>
           </Flex>
         </ModalContent>
       </ModalBody>

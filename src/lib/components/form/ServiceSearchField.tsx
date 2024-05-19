@@ -1,6 +1,5 @@
 // ServiceSearchField.tsx
 
-import React, { useState } from 'react';
 import {
   InputGroup,
   InputLeftElement,
@@ -9,6 +8,8 @@ import {
   Box,
   useBoolean,
 } from '@chakra-ui/react';
+import type React from 'react';
+import { useState } from 'react';
 import { BsSearch } from 'react-icons/bs';
 
 import { TextLikeButton } from '../button';
@@ -20,7 +21,9 @@ interface ServiceSearchFieldProps {
   onSearch: (query: string) => void;
 }
 
-const ServiceSearchField: React.FC<ServiceSearchFieldProps> = ({ onSearch }) => {
+const ServiceSearchField: React.FC<ServiceSearchFieldProps> = ({
+  onSearch,
+}) => {
   const [modalState, { on: showModal, off: closeModal }] = useBoolean(false);
   const [searchQuery, setSearchQuery] = useState('');
 

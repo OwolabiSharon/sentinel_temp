@@ -37,7 +37,7 @@ const ServiceSettingsModal = ({
     };
 
     fetchData();
-  }, [isOpen]);
+  });
 
   return (
     <Box mt={{ base: 8 }}>

@@ -1,17 +1,12 @@
 import { HStack, VStack, Text } from '@chakra-ui/react';
-import { createClient } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import supabase from '../../supabase';
 import { PrimaryButton } from '~/lib/components/button';
 import ChakraLink from '~/lib/components/ChakraLink';
 import FormInput from '~/lib/components/form/FormInput';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabase = createClient(
-  supabaseUrl,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
 const SignupForm = () => {
   const [formData, setFormData] = useState({
     firstName: '',

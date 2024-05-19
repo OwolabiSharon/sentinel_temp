@@ -40,7 +40,7 @@ const MenuBox = ({ color }: MenuBoxProps) => {
         router.push('/login');
       }
     } catch (error) {
-      console.error('Error logging out:', error.message);
+      console.error('Error logging out:', error);
     }
   };
 

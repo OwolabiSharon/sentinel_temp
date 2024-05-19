@@ -1,14 +1,18 @@
 import { Box, Text, useBoolean } from '@chakra-ui/react';
 
 import { RedFilledButton } from '~/lib/components/button';
-import AlertModal from './AlertModal';
 import { SectionTitle2 } from '~/lib/components/title';
+
+import AlertModal from './AlertModal';
 
 const PlanCard = () => {
   const [modalState, { on: openModal, off: closeModal }] = useBoolean(false);
-  const userDataString = typeof window !== 'undefined' ? localStorage.getItem('fullAuthUserData') : null;
+  const userDataString =
+    typeof window !== 'undefined'
+      ? localStorage.getItem('fullAuthUserData')
+      : null;
   const data = userDataString ? JSON.parse(userDataString) : null;
-  
+
   return (
     <Box
       width={['full', 'md']}
@@ -39,7 +43,7 @@ const PlanCard = () => {
           </Text>
         }
         title="Cancel Plan"
-        id= {data?.organization.subscription_id}
+        id={data?.organization.subscription_id}
         ctaText="Cancel plan"
       />
     </Box>

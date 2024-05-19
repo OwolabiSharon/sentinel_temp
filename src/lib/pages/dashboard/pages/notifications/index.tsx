@@ -27,56 +27,56 @@ const Notifications = () => {
         Notification Methods
       </Heading>
       <VStack width={{ base: 'full', md: 'md' }}>
-      <VStack width={{ base: 'full', md: 'md' }}>
-      <CheckboxGroup onChange={setMethods} value={methods}>
-        <VStack
-          width="full"
-          fontSize="small"
-          textTransform="capitalize"
-          justify="start"
-        >
-          {notificationMethods.map((value, index) => {
-            if (value.type?.toLowerCase() === 'coming soon') {
-              return (
-                <ComingSoonNotificationCard
-                  key={index}
-                  name={value.name}
-                  icon={value.icon}
-                  width={{ base: 'full' }}
-                />
-              );
-            } else if (value.name.toLowerCase() === 'webhook') {
-              return (
-                <CheckCard
-                  key={index}
-                  name={value.name}
-                  icon={value.icon}
-                  width={{ base: 'full' }}
-                  showContentWhenChecked={<TestWebHook />}
-                  cardProps={{
-                    px: 5,
-                    py: 4,
-                  }}
-                />
-              );
-            } else {
-              return (
-                <CheckCard
-                  key={index}
-                  name={value.name}
-                  icon={value.icon}
-                  width={{ base: 'full' }}
-                  cardProps={{
-                    px: 5,
-                    py: 4,
-                  }}
-                />
-              );
-            }
-          })}
+        <VStack width={{ base: 'full', md: 'md' }}>
+          <CheckboxGroup onChange={setMethods} value={methods}>
+            <VStack
+              width="full"
+              fontSize="small"
+              textTransform="capitalize"
+              justify="start"
+            >
+              {notificationMethods.map((value, index) => {
+                if (value.type?.toLowerCase() === 'coming soon') {
+                  return (
+                    <ComingSoonNotificationCard
+                      key={index}
+                      name={value.name}
+                      icon={value.icon}
+                      width={{ base: 'full' }}
+                    />
+                  );
+                }
+                if (value.name.toLowerCase() === 'webhook') {
+                  return (
+                    <CheckCard
+                      key={index}
+                      name={value.name}
+                      icon={value.icon}
+                      width={{ base: 'full' }}
+                      showContentWhenChecked={<TestWebHook />}
+                      cardProps={{
+                        px: 5,
+                        py: 4,
+                      }}
+                    />
+                  );
+                }
+                return (
+                  <CheckCard
+                    key={index}
+                    name={value.name}
+                    icon={value.icon}
+                    width={{ base: 'full' }}
+                    cardProps={{
+                      px: 5,
+                      py: 4,
+                    }}
+                  />
+                );
+              })}
+            </VStack>
+          </CheckboxGroup>
         </VStack>
-      </CheckboxGroup>
-    </VStack>
 
         <Text
           fontWeight="medium"

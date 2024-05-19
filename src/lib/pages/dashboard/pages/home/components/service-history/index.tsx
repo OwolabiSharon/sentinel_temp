@@ -1,51 +1,57 @@
 import { Flex, Box, VStack } from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
 
+import supabase from '../../../../../../supabase';
+import historySupabase from '../../../../historySupabase';
 import { SectionTitle } from '~/lib/components/title';
 import useServicesDown from '~/lib/pages/dashboard/hooks/services-down';
 
-import React, { useState, useEffect } from 'react';
-
 import ServiceHistoryItem from './ServiceHistoryItem';
 import ServiceOutageCard from './ServiceOutageCard';
-import supabase from '../../../../../../supabase';
-import historySupabase from '../../../../historySupabase';
 
 const ServiceHistory = () => {
   const [dayHistory, setDayHistory] = useState<any[]>([]);
   const [outages7Days, setOutages7Days] = useState(0);
   const [outages30Days, setOutages30Days] = useState(0);
 
-
-  const userDataString = typeof window !== 'undefined' ? localStorage.getItem('monitored_providers') : null;
+  const userDataString =
+    typeof window !== 'undefined'
+      ? localStorage.getItem('monitored_providers')
+      : null;
   const services = userDataString ? JSON.parse(userDataString) : null;
 
-
   useEffect(() => {
-
-    const fetchHistory = async (providerIds: any, days:any) => {
+    const fetchHistory = async (providerIds: any, days: any) => {
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - days);
-      console.log("prov ids" ,providerIds);
-      
+      console.log('prov ids', providerIds);
+
       const { data: serviceData, error: serviceError } = await historySupabase
         .from('service_histories')
-        .select('created_at, name, status, services!inner(provider_id, providers(name, icon_url))')
+        .select(
+          'created_at, name, status, services!inner(provider_id, providers(name, icon_url))'
+        )
         .gte('created_at', startDate.toISOString())
         .in('services.provider_id', providerIds);
-      
-      const { data: componentData, error: componentError } = await historySupabase
-      .from('component_histories')
-      .select('created_at, name, status, components!inner(services!inner(provider_id, providers(name, icon_url)))')
-      .in('components.services.provider_id', providerIds)
-      .gte('created_at', startDate.toISOString());
-      
-      
+
+      const { data: componentData, error: componentError } =
+        await historySupabase
+          .from('component_histories')
+          .select(
+            'created_at, name, status, components!inner(services!inner(provider_id, providers(name, icon_url)))'
+          )
+          .in('components.services.provider_id', providerIds)
+          .gte('created_at', startDate.toISOString());
+
       if (serviceError || componentError) {
-        console.error('Error fetching history:', serviceError?.message || componentError?.message);
+        console.error(
+          'Error fetching history:',
+          serviceError?.message || componentError?.message
+        );
         return [];
       }
       console.log([...serviceData, ...componentData]);
-      
+
       return [...serviceData, ...componentData];
     };
 
@@ -56,33 +62,55 @@ const ServiceHistory = () => {
       const endDate7Days = new Date();
       endDate7Days.setDate(endDate7Days.getDate() - 7);
 
-      const filteredFullHistoryData = historyData.filter(entry => entry.status === "Not Operational" || "Partial Outage");
-      const filteredData7Days = filteredFullHistoryData.filter(entry => new Date(entry.created_at) >= endDate7Days);
+      const filteredFullHistoryData = historyData.filter(
+        (entry) => entry.status === 'Not Operational' || 'Partial Outage'
+      );
+      const filteredData7Days = filteredFullHistoryData.filter(
+        (entry) => new Date(entry.created_at) >= endDate7Days
+      );
 
       const endDate24Hours = new Date();
       endDate24Hours.setHours(endDate24Hours.getHours() - 24);
 
-      const filtered24HourHistory = historyData.filter(entry => new Date(entry.created_at) >= endDate24Hours);
+      const filtered24HourHistory = historyData.filter(
+        (entry) => new Date(entry.created_at) >= endDate24Hours
+      );
       const unifiedDataList = filtered24HourHistory.map((data: any) => {
         if (data.components) {
-          const { created_at, status, name, components: { services: { providers: { name: provider_name, icon_url } } } } = data;
+          const {
+            created_at,
+            status,
+            name,
+            components: {
+              services: {
+                providers: { name: provider_name, icon_url },
+              },
+            },
+          } = data;
           return { created_at, status, name, provider_name, icon_url };
-        } else if (data.services) {
-          const { created_at, status, name, services: { providers: { name: provider_name, icon_url } } } = data;
-          return { created_at, status, name, provider_name, icon_url };
-        } else {
-          return {}; // Handle unrecognized data format
         }
+        if (data.services) {
+          const {
+            created_at,
+            status,
+            name,
+            services: {
+              providers: { name: provider_name, icon_url },
+            },
+          } = data;
+          return { created_at, status, name, provider_name, icon_url };
+        }
+        return {}; // Handle unrecognized data format
       });
-      
-      setDayHistory(unifiedDataList)
+
+      setDayHistory(unifiedDataList);
 
       setOutages7Days(filteredData7Days.length);
       setOutages30Days(filteredFullHistoryData.length);
     };
 
     fetchData();
-  }, []); // Make sure to include any dependencies if required
+  }); // Make sure to include any dependencies if required
 
   return (
     <Flex
@@ -120,16 +148,17 @@ const ServiceHistory = () => {
         width={{ base: 'full', md: 'unset' }}
         pb={{ '2md': 12 }}
       >
-        <ServiceOutageCard headingText="Last 7 days" numOfOutage={outages7Days} />
-        <ServiceOutageCard headingText="Last 30 days" numOfOutage={outages30Days} />
+        <ServiceOutageCard
+          headingText="Last 7 days"
+          numOfOutage={outages7Days}
+        />
+        <ServiceOutageCard
+          headingText="Last 30 days"
+          numOfOutage={outages30Days}
+        />
       </VStack>
     </Flex>
   );
 };
 
 export default ServiceHistory;
-
-
-// <ServiceOutageCard headingText="Last 7 days" numOfOutage={outages7Days} />
-{/* <ServiceOutageCard headingText="Last 30 days" numOfOutage={outages30Days} /> */ }
-// {dayHistory.map((value, index) => (

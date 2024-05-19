@@ -13,10 +13,14 @@ import ServiceHistory from './components/service-history';
 import ServiceList from './components/service-list';
 import ServiceStatus from './components/service-status';
 
+function setName(arg0: string) {
+  throw new Error('Function not implemented.');
+}
+
 const DashboardHome = () => {
   const router = useRouter();
   const { name } = router.query;
-  const [serviceToView, setServiceToView] = useState<{} | null>(null);
+  const [serviceToView, setServiceToView] = useState<object | null>(null);
   const [firstName, setFirstName] = useState('');
   const [organizationName, setOrganizationName] = useState('');
 
@@ -102,7 +106,3 @@ const DashboardHome = () => {
 };
 
 export default DashboardHome;
-
-function setName(arg0: string) {
-  throw new Error('Function not implemented.');
-}

@@ -66,7 +66,7 @@ const ServiceList = ({ cb }: ServiceListProps) => {
             }}
             role="group"
           >
-            <ServiceListItem onClick={cb} {...value.providers} data = {...value.providers} />
+          <ServiceListItem onClick={cb} {...value.providers} data={{...value.providers}} />
           </GridItem>
         ))}
       </Grid>

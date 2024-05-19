@@ -21,7 +21,7 @@ type ServiceDetailsHeaderType = {
 
 const ServiceDetailsHeader = ({ name, link }: ServiceDetailsHeaderType) => {
   const [modalState, { on: showModal, off: closeModal }] = useBoolean(false);
-  console.log(name,  link)
+  console.log(name, link);
   return (
     <Grid
       templateColumns={{ base: '2fr 10fr', md: '1fr 11fr' }}

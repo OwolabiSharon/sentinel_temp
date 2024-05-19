@@ -1,15 +1,18 @@
+import { useState } from 'react';
+
+import supabase from '../../../../../../supabase';
 import { PrimaryButton } from '~/lib/components/button';
 import FormInput from '~/lib/components/form/FormInput';
-import supabase from '../../../../../../supabase';
-import { useState } from 'react';
 
 const ChangePasswordForm = () => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
 
-  const userDataString = typeof window !== 'undefined' ? localStorage.getItem('fullAuthUserData') : null;
+  const userDataString =
+    typeof window !== 'undefined'
+      ? localStorage.getItem('fullAuthUserData')
+      : null;
   const data = userDataString ? JSON.parse(userDataString) : null;
-  
 
   const handleChangePassword = async () => {
     try {
@@ -30,13 +33,11 @@ const ChangePasswordForm = () => {
 
       if (error) {
         console.log(error);
-        
+
         throw error;
       }
-
     } catch (error) {
       console.log(error);
-      
     }
   };
 

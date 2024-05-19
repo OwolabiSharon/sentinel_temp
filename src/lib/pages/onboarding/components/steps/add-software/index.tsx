@@ -8,23 +8,23 @@ import {
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 
+import supabase from '../../../../../supabase';
 import StepFooter from '../../StepFooter';
 import { CheckCard } from '~/lib/components/card';
 import ServiceSearchField from '~/lib/components/form/ServiceSearchField';
 import FadeIn from '~/lib/components/motion/fade-in';
 import useServices from '~/lib/hooks/services';
 import type { StepComponentProps } from '~/lib/types';
-import supabase from '../../../../../supabase';
 
 type AddSoftwareProps = {
-  selectedPlan?: {};
+  selectedPlan?: object;
   initialValue?: string[];
-  orgData?: any
+  orgData?: any;
 };
 const AddSoftware = ({
   cb,
   initialValue,
-  orgData
+  orgData,
 }: StepComponentProps & AddSoftwareProps) => {
   const [softwares, updateSoftwares] = useState<(string | number)[]>(
     initialValue || []
@@ -32,10 +32,8 @@ const AddSoftware = ({
   const [services, setServices] = useState<any[]>([]);
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const [filteredServices, setFilteredServices] = useState<any[]>([]);
-  //const [orgId, setOrgId] = useState<any>();
-  
-  
-  
+  // const [orgId, setOrgId] = useState<any>();
+
   const getServices = async () => {
     try {
       const { data, error } = await supabase.from('providers').select('*');
@@ -45,7 +43,6 @@ const AddSoftware = ({
       }
       setServices(data);
       setFilteredServices(data);
-
     } catch (error) {
       console.error('Error fetching services:', error);
     }
@@ -59,7 +56,11 @@ const AddSoftware = ({
     setFilteredServices(filtered);
   };
 
-  const handleSelectionChange = (id: string, name: string, isChecked: boolean) => {
+  const handleSelectionChange = (
+    id: string,
+    name: string,
+    isChecked: boolean
+  ) => {
     if (isChecked) {
       setSelectedItems([...selectedItems, { id, name }]);
     } else {
@@ -67,32 +68,34 @@ const AddSoftware = ({
     }
   };
 
-  const handleSaveChanges = async() => {
+  const handleSaveChanges = async () => {
     console.log('Selected items:', selectedItems);
     for (const item of selectedItems) {
-      try {       
-          const { data: newProvider, error: addError } = await supabase
-            .from('monitored_providers')
-            .insert({
-              provider_id: item.id,
-              organization_id: orgData.orgId
-            });
-    
-          if (addError) {
-            console.error('Error adding provider to monitored_providers:', addError.message);
-            continue; // Move to the next item in case of an error
-          }
-    
-          console.log('Provider added to monitored_providers:', newProvider);
+      try {
+        const { data: newProvider, error: addError } = await supabase
+          .from('monitored_providers')
+          .insert({
+            provider_id: item.id,
+            organization_id: orgData.orgId,
+          });
+
+        if (addError) {
+          console.error(
+            'Error adding provider to monitored_providers:',
+            addError.message
+          );
+          continue; // Move to the next item in case of an error
+        }
+
+        console.log('Provider added to monitored_providers:', newProvider);
       } catch (error: any) {
         console.error('Error:', error?.message);
         continue; // Move to the next item in case of an error
       }
     }
-    
   };
   const handleClick = () => {
-    handleSaveChanges()
+    handleSaveChanges();
     cb()({ softwares: selectedItems as string[], step: 2 });
   };
 
@@ -112,7 +115,7 @@ const AddSoftware = ({
         </Heading>
         <VStack justify="center" gap={4}>
           <VStack width="full" maxWidth="xl">
-          <ServiceSearchField onSearch={handleSearch} />
+            <ServiceSearchField onSearch={handleSearch} />
           </VStack>
           <CheckboxGroup onChange={updateSoftwares} value={softwares}>
             <Grid

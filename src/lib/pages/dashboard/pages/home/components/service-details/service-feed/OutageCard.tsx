@@ -1,8 +1,8 @@
 import { Box, Divider, Flex, Text, Spacer } from '@chakra-ui/react';
 
-const OutageCard = ({ title, severity, issues }) => {
+const OutageCard = ({ title, severity, issues }: any) => {
   console.log(issues);
-  
+
   return (
     <Box
       w={{ base: '100%', md: '100%' }} // Adjust width based on screen size
@@ -45,9 +45,9 @@ const OutageCard = ({ title, severity, issues }) => {
               </Text>
             </Flex>
           </Flex>
-          {issue.details.map((detail, index) => (
+          {issue.details.map((detail, detailIndex) => (
             <Flex
-              key={index}
+              key={detailIndex}
               justifyItems="between"
               alignItems="center"
               w="100%"
@@ -100,7 +100,6 @@ const App = () => {
 };
 
 export default App;
-
 
 // const dateString = '2020-05-14T04:00:00Z'
 

@@ -1,11 +1,11 @@
 import { Box, HStack, Text, useBoolean, Image, VStack } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 
+import supabase from '../../../../../../supabase';
 import { PrimaryButton } from '~/lib/components/button';
 import AddTeammateModal from '~/lib/components/modals/AddTeammateModal';
 import AlertModal from '~/lib/components/modals/AlertModal';
 import { SectionTitle2 } from '~/lib/components/title';
-import supabase from '../../../../../../supabase';
 
 const mates = [
   {
@@ -18,31 +18,31 @@ const mates = [
   },
 ];
 
-
 const Team = () => {
-  const userDataString = typeof window !== 'undefined' ? localStorage.getItem('fullAuthUserData') : null;
+  const userDataString =
+    typeof window !== 'undefined'
+      ? localStorage.getItem('fullAuthUserData')
+      : null;
   const data = userDataString ? JSON.parse(userDataString) : null;
 
   const [users, setUsers] = useState<any[] | undefined>([]);
-  const getData = async (data: any) => {
+  const getData = async (funcData: any) => {
     try {
       const { data: orgUsers, error: orgError } = await supabase
-            .from('organization')
-            .select('id, users(*)')
-            .eq('id', data?.organization.id)
-            .single()
-    console.log(orgUsers);
-    setUsers(orgUsers?.users)
+        .from('organization')
+        .select('id, users(*)')
+        .eq('id', funcData?.organization.id)
+        .single();
+      console.log(orgUsers);
+      setUsers(orgUsers?.users);
     } catch (error) {
       console.log(error);
-      
     }
   };
 
   useEffect(() => {
-    getData(data)
-  }, []);
-  
+    getData(data);
+  }, [data]);
 
   const [
     removeMateModalState,
@@ -73,7 +73,7 @@ const Team = () => {
           <HStack justify="space-between" width="full">
             <Box>
               <Text fontSize={['sm']} pb={[1]} fontWeight={['medium']}>
-                {value?.first_name} {value?.last_name} 
+                {value?.first_name} {value?.last_name}
               </Text>
             </Box>
             <Box
@@ -89,7 +89,7 @@ const Team = () => {
               <Image width="4" src="/assets/svg/delete.svg" />
             </Box>
           </HStack>
-          <Text fontSize={['xs']}>Role:  {value.role}</Text>
+          <Text fontSize={['xs']}>Role: {value.role}</Text>
         </VStack>
       ))}
       <AlertModal
@@ -106,13 +106,13 @@ const Team = () => {
         }
         title="Remove Teammate"
         ctaText="Remove"
-        email = {mateEmail}
+        email={mateEmail}
       />
       <AddTeammateModal
         isOpen={addMateModalState}
         onClose={closeAddMateModal}
-        user_id = {data?.id}
-        organization_id = {data?.organization.id}
+        user_id={data?.id}
+        organization_id={data?.organization.id}
       />
     </Box>
   );

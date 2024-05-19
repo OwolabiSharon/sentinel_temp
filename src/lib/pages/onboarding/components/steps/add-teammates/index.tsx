@@ -2,14 +2,15 @@
 import { Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import { useRef, useState } from 'react';
 
+import supabase from '../../../../../supabase';
 import StepFooter from '../../StepFooter';
 import { TextLikeButton } from '~/lib/components/button';
 import FormInput from '~/lib/components/form/FormInput';
 import Label from '~/lib/components/label';
 import FadeIn from '~/lib/components/motion/fade-in';
+import type { Plan, Plans } from '~/lib/hooks/plan-restrictions';
+import plans from '~/lib/hooks/plan-restrictions';
 import type { StepComponentProps } from '~/lib/types';
-import supabase from '../../../../../supabase';
-import plans, { Plan, Plans } from '~/lib/hooks/plan-restrictions'; 
 
 type AddTeammatesProps = {
   selectedPlan?: {
@@ -17,32 +18,31 @@ type AddTeammatesProps = {
     checkoutLink?: string;
   };
   initialValue?: string[];
-  orgData?: any
+  orgData?: any;
 };
 const AddTeammates = ({
   selectedPlan,
   cb,
   initialValue,
-  orgData
+  orgData,
 }: StepComponentProps & AddTeammatesProps) => {
   const [mates, setMates] = useState<string[]>(initialValue || []);
   const inputRef = useRef<HTMLInputElement>(null);
 
-
   function getSelectedPlan(planName: string | undefined): Plan {
-    if (planName === "starter" || planName === "pro") {
-        return plans[planName as keyof Plans]; // Accessing the plan dynamically using bracket notation
+    if (planName === 'starter' || planName === 'pro') {
+      return plans[planName as keyof Plans]; // Accessing the plan dynamically using bracket notation
     }
-    return plans["starter"]; // Return null for invalid plan names
+    return plans.starter; // Return null for invalid plan names
   }
 
-    // Get the selected plan based on the plan name
-    const planRestriction: Plan = getSelectedPlan(selectedPlan?.name);
+  // Get the selected plan based on the plan name
+  const planRestriction: Plan = getSelectedPlan(selectedPlan?.name);
   const addTeamMate = () => {
     if (!inputRef.current) {
       return;
     }
-    
+
     if (inputRef.current.reportValidity()) {
       setMates([...mates, inputRef.current.value]);
       inputRef.current.value = '';
@@ -57,14 +57,14 @@ const AddTeammates = ({
     }
   };
 
-  const addTeam = async(email: string) => {
-    const { data, error } = await supabase.functions.invoke("invite-to-org", {
-      body: {user_id: orgData.userId ,email ,organization_id: orgData.userId },
-    })
+  const addTeam = async (email: string) => {
+    const { data, error } = await supabase.functions.invoke('invite-to-org', {
+      body: { user_id: orgData.userId, email, organization_id: orgData.userId },
+    });
   };
   const moveToNextStep = () => {
     for (const item of mates) {
-      addTeam(item)
+      addTeam(item);
     }
     cb()({ teammates: mates, step: 4 });
     window.location.href =
@@ -72,7 +72,7 @@ const AddTeammates = ({
   };
 
   return (
-     <FadeIn>
+    <FadeIn>
       <Heading size="md" m={8} textAlign="center">
         Add members of your team
       </Heading>
@@ -107,7 +107,7 @@ const AddTeammates = ({
             onClick={addTeamMate}
             lineHeight="150%"
             fontSize="small"
-            //isDisabled={mates.length >= planRestriction.max_teammates} // Disable button if max teammates limit reached
+            // isDisabled={mates.length >= planRestriction.max_teammates} // Disable button if max teammates limit reached
           >
             Add another teammate
           </TextLikeButton>

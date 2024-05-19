@@ -18,11 +18,10 @@ const useServices = () => {
         color: 'telegram.800',
       },
     },
-    {  
+    {
       name: 'Slack',
       icon: BsSlack,
     },
-    
   ];
 
   services = [...services, ...services, ...services, ...services];

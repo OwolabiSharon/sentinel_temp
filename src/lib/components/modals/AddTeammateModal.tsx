@@ -1,28 +1,33 @@
 import { Flex, Text, Box } from '@chakra-ui/react';
 import { useState, useRef } from 'react';
 
+import supabase from '../../supabase';
 import { PrimaryButton, TextLikeButton } from '../button';
 import FormInput from '../form/FormInput';
 import Label from '../label';
 
 import BasicModal from './BasicModal';
-import supabase from '../../supabase';
 
 type AddTeammateModalProps = {
   onClose: () => void;
   isOpen: boolean;
   user_id?: string;
-  organization_id?: string
+  organization_id?: string;
 };
-const AddTeammateModal = ({ isOpen, onClose,user_id,organization_id }: AddTeammateModalProps) => {
+const AddTeammateModal = ({
+  isOpen,
+  onClose,
+  user_id,
+  organization_id,
+}: AddTeammateModalProps) => {
   const [mates, setMates] = useState<string[]>([]);
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const addTeamMate = async(mate: string) => {
-    const { data, error } = await supabase.functions.invoke("invite-to-org", {
-      body: {user_id ,email ,organization_id },
-    })
+  const addTeamMate = async () => {
+    const { data, error } = await supabase.functions.invoke('invite-to-org', {
+      body: { user_id, email, organization_id },
+    });
   };
   return (
     <BasicModal
@@ -40,7 +45,7 @@ const AddTeammateModal = ({ isOpen, onClose,user_id,organization_id }: AddTeamma
             placeholder: 'Email',
             p: 2,
             bgColor: 'whiteAlpha.500',
-            onChange: (e) => setEmail(e.target.value)
+            onChange: (e) => setEmail(e.target.value),
           }}
           required
           inputRef={inputRef}

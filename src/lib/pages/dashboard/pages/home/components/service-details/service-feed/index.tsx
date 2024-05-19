@@ -6,7 +6,6 @@ import { SectionTitle2 } from '~/lib/components/title';
 
 import OutageCard from './OutageCard'; // Import the OutageCard component
 
-
 type ServiceFeedProps = {
   service: any;
 };

@@ -12,9 +12,9 @@ import {
 import type { ReactNode } from 'react';
 import type { IconType } from 'react-icons';
 
+import supabase from '../../supabase';
 import { RedFilledButton } from '../button';
 import { SectionTitle2 } from '../title';
-import supabase from '../../supabase';
 
 type AlertModalProps = {
   isOpen: boolean;
@@ -23,7 +23,7 @@ type AlertModalProps = {
   title: string;
   text: ReactNode;
   ctaText: string;
-  email?: string
+  email?: string;
 };
 const AlertModal = ({
   isOpen,
@@ -32,23 +32,23 @@ const AlertModal = ({
   title,
   text,
   ctaText,
-  email
+  email,
 }: AlertModalProps) => {
   const removeUser = async () => {
     const { data, error } = await supabase
       .from('users')
       .update({ organization_id: null, role: null })
       .eq('email', email);
-    
+
     if (error) {
       console.error('Error updating user:', error.message);
-      onClose()
+      onClose();
     } else {
       console.log('User updated successfully:', data);
-      onClose()
+      onClose();
     }
-  }
-  
+  };
+
   return (
     <Modal
       isOpen={isOpen}

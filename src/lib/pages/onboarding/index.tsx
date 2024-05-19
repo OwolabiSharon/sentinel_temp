@@ -1,6 +1,9 @@
 // Onboarding.tsx
 import { VStack, HStack, Heading } from '@chakra-ui/react';
 import { NextSeo } from 'next-seo';
+import { useState, useEffect } from 'react';
+
+import supabase from '../../supabase';
 import ChakraLink from '~/lib/components/ChakraLink';
 import FallBackBox from '~/lib/components/fallback-box';
 import Logo from '~/lib/components/Logo';
@@ -8,13 +11,12 @@ import SuccessIcon from '~/lib/components/success-icon';
 import type { OnboardingFormType } from '~/lib/hooks/form/onboarding-form';
 import useOnboardingForm from '~/lib/hooks/form/onboarding-form';
 import { useMultiStepForm } from '~/lib/hooks/stepper';
+
 import AddSoftware from './components/steps/add-software';
 import AddTeammates from './components/steps/add-teammates';
 import NotificationMethod from './components/steps/notification-methods';
 import Payment from './components/steps/payment';
 import SelectPlan from './components/steps/select-plan';
-import { useState, useEffect } from 'react';
-import supabase from '../../supabase';
 
 const stepLabels = [
   'Select plan',
@@ -53,16 +55,34 @@ const Onboarding = () => {
 
   const endOnboarding = () => {
     clearForm();
-    localStorage.removeItem('multiStepFormStep'); 
+    localStorage.removeItem('multiStepFormStep');
     nextStep();
   };
 
   const stepsMapping = [
     <SelectPlan cb={moveToNextStep} initialValue={form.plan} />,
-    <AddSoftware cb={moveToNextStep} initialValue={form.softwares} orgData selectedPlan={form.plan}/>,
-    <NotificationMethod cb={moveToNextStep} initialValue={form.notificationMethods} selectedPlan={form.plan}/>,
-    <AddTeammates cb={moveToNextStep} initialValue={form.teammates} orgData selectedPlan={form.plan}/>,
-    <Payment cb={endOnboarding} initialValue={form.payment} selectedPlan={form.plan} />,
+    <AddSoftware
+      cb={moveToNextStep}
+      initialValue={form.softwares}
+      orgData
+      selectedPlan={form.plan}
+    />,
+    <NotificationMethod
+      cb={moveToNextStep}
+      initialValue={form.notificationMethods}
+      selectedPlan={form.plan}
+    />,
+    <AddTeammates
+      cb={moveToNextStep}
+      initialValue={form.teammates}
+      orgData
+      selectedPlan={form.plan}
+    />,
+    <Payment
+      cb={endOnboarding}
+      initialValue={form.payment}
+      selectedPlan={form.plan}
+    />,
   ];
 
   useEffect(() => {
@@ -73,7 +93,7 @@ const Onboarding = () => {
         } = await supabase.auth.getUser();
         console.log('Auth User data:', user);
 
-        const { data: userData, error: userError } = await supabase
+        const { data: userData } = await supabase
           .from('users')
           .select('*, organization(*)')
           .eq('id', user?.id)
@@ -97,7 +117,12 @@ const Onboarding = () => {
       <NextSeo title="Onboarding" />
       <HStack p={{ base: 3 }} width="full" justify="space-between">
         <Logo width={120} />
-        <ChakraLink color="brand.primary.900" fontWeight="bold" href="/login" onClick={endOnboarding}>
+        <ChakraLink
+          color="brand.primary.900"
+          fontWeight="bold"
+          href="/login"
+          onClick={endOnboarding}
+        >
           Log in
         </ChakraLink>
       </HStack>

@@ -18,7 +18,6 @@ import useNotificationMethods from '~/lib/hooks/notificationMethods';
 import type { StepComponentProps } from '~/lib/types';
 
 type NotificationMethodProps = {
-  selectedPlan?: {};
   initialValue?: string[];
 };
 const NotificationMethod = ({

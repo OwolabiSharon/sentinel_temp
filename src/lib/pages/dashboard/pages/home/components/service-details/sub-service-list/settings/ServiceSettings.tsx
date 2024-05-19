@@ -1,40 +1,55 @@
-import { Box, Flex, Button, Checkbox, Text, Divider, useToast } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Button,
+  Checkbox,
+  Text,
+  Divider,
+  useToast,
+} from '@chakra-ui/react';
 import React, { useState } from 'react';
+
 import supabase from '../../../../../../../../supabase';
-const userDataString = typeof window !== 'undefined' ? localStorage.getItem('fullAuthUserData') : null;
+
+const userDataString =
+  typeof window !== 'undefined'
+    ? localStorage.getItem('fullAuthUserData')
+    : null;
 const userData = userDataString ? JSON.parse(userDataString) : null;
 type MyObject = {
   [key: string]: any; // This allows dynamic keys with values of any type
 };
 const ServiceSettings = ({ data }: any) => {
-  const toast = useToast(); 
+  const toast = useToast();
   const [checkedItems, setCheckedItems] = useState(new Map());
   const [checkedServices, setCheckedServices] = useState<MyObject>({});
 
   // Function to toggle checkbox state
-  const toggleCheckbox = async(serviceIndex: number, componentIndex?: number) => {
+  const toggleCheckbox = async (
+    serviceIndex: number,
+    componentIndex?: number
+  ) => {
     const newCheckedItems = new Map(checkedItems);
-  
+
     if (componentIndex !== undefined) {
       const key = `${serviceIndex}-${componentIndex}`;
       newCheckedItems.set(key, !newCheckedItems.get(key));
     } else {
       // Toggle the service's checked state
-      const components = data.services[serviceIndex].components;
+      const { components } = data.services[serviceIndex];
       if (components.length === 0) {
         if (data.services[serviceIndex].id in checkedServices) {
-          setCheckedServices(prevObject => {
+          setCheckedServices((prevObject) => {
             const newObject = { ...prevObject };
             delete newObject[data.services[serviceIndex].id];
             return newObject;
           });
         } else {
-          setCheckedServices(prevObject => ({
+          setCheckedServices((prevObject) => ({
             ...prevObject,
             [data.services[serviceIndex].id]: true,
           }));
         }
-        
       } else {
         for (let i = 0; i < components.length; i++) {
           const key = `${serviceIndex}-${i}`;
@@ -42,36 +57,60 @@ const ServiceSettings = ({ data }: any) => {
         }
       }
     }
-  
+
     setCheckedItems(newCheckedItems);
-  
   };
 
   // Function to check if all checkboxes in a service are checked
   const isServiceChecked = (serviceIndex: number) => {
-    const components = data.services[serviceIndex].components;
+    const { components } = data.services[serviceIndex];
     if (components.length === 0) {
-      
-      if (data.services[serviceIndex].id in checkedServices) {
-        return true
-      }
-        return false
-    } else {
-      const checked = (data.services[serviceIndex].components.every((_:any, i:any) =>
-      checkedItems.get(`${serviceIndex}-${i}`)
-      ));
-      return checked
+      return data.services[serviceIndex].id in checkedServices;
     }
+    return data.services[serviceIndex].components.every((_: any, i: any) =>
+      checkedItems.get(`${serviceIndex}-${i}`)
+    );
   };
 
   // Function to check if some checkboxes in a service are checked
   const isServiceIndeterminate = (serviceIndex: number) => {
-    const checkedCount = data.services[serviceIndex].components.reduce((count: any, _:any, i:any) => {
-      const isChecked = checkedItems.get(`${serviceIndex}-${i}`);
-      return count + (isChecked ? 1 : 0);
-    }, 0);
-    
-    return checkedCount > 0 && checkedCount < data.services[serviceIndex].components.length;
+    const checkedCount = data.services[serviceIndex].components.reduce(
+      (count: any, _: any, i: any) => {
+        const isChecked = checkedItems.get(`${serviceIndex}-${i}`);
+        return count + (isChecked ? 1 : 0);
+      },
+      0
+    );
+
+    return (
+      checkedCount > 0 &&
+      checkedCount < data.services[serviceIndex].components.length
+    );
+  };
+  const saveServiceSubscriptions = async (service: any, userInfo: any) => {
+    // Save service subscription
+    await supabase.from('user_subscriptions').insert({
+      provider_id: data.id,
+      service_id: service.id,
+      provider_name: data.name,
+      organization_id: userInfo?.organization.id,
+      email: userInfo?.organization.email,
+      webHook_url: userInfo?.organization.webhook_url,
+    });
+    console.log('Service subscription added');
+
+    // Save component subscriptions
+    for (const component of service.components) {
+      await supabase.from('user_subscriptions').insert({
+        provider_id: data.id,
+        component_id: component.id,
+        provider_name: data.name,
+        organization_id: userInfo?.organization.id,
+        email: userInfo?.organization.email,
+        webHook_url: userInfo?.organization.webhook_url,
+      });
+      console.log('Component subscription added');
+    }
   };
 
   const onSave = async () => {
@@ -87,50 +126,23 @@ const ServiceSettings = ({ data }: any) => {
       try {
         for (let i = 0; i < data.services.length; i++) {
           if (isServiceChecked(i)) {
-            console.log("service checked");
-            await supabase
-              .from('user_subscriptions')
-              .insert({
-                provider_id: data.id,
-                service_id: data.services[i].id,
-                provider_name: data.name,
-                organization_id: userData?.organization.id,
-                email: userData?.organization.email,
-                webHook_url: userData?.organization.webhook_url
-              });
-            console.log("Service subscription added");
-            //add service to user_subscription
+            console.log('service checked');
+            await saveServiceSubscriptions(data.services[i], userData);
+          } else {
             for (let j = 0; j < data.services[i].components.length; j++) {
-              await supabase
-                .from('user_subscriptions')
-                .insert({
+              if (checkedItems.get(`${i}-${j}`)) {
+                await supabase.from('user_subscriptions').insert({
                   provider_id: data.id,
                   component_id: data.services[i].components[j].id,
                   provider_name: data.name,
                   organization_id: userData?.organization.id,
                   email: userData?.organization.email,
-                  webHook_url: userData?.organization.webhook_url
+                  webHook_url: userData?.organization.webhook_url,
                 });
-              console.log("component subscription added");
-            }
-          } else {
-            for (let j = 0; j < data.services[i].components.length; j++) {
-              if (checkedItems.get(`${i}-${j}`)) {
-                await supabase
-                  .from('user_subscriptions')
-                  .insert({
-                    provider_id: data.id,
-                    component_id: data.services[i].components[j].id,
-                    provider_name: data.name,
-                    organization_id: userData?.organization.id,
-                    email: userData?.organization.email,
-                    webHook_url: userData?.organization.webhook_url
-                  });
-                console.log("component subscription added");
+                console.log('component subscription added');
               }
             }
           }
-        
         }
         toast({
           title: 'Success',
@@ -140,7 +152,7 @@ const ServiceSettings = ({ data }: any) => {
           isClosable: true,
         });
       } catch (error) {
-        console.log(error)
+        console.log(error);
         toast({
           title: 'Error',
           description: 'Please enter both email and password.',
@@ -149,13 +161,10 @@ const ServiceSettings = ({ data }: any) => {
           isClosable: true,
         });
       }
-      
-      
     }
     return true;
   };
 
- 
   return (
     <Box
       w="670px"
@@ -223,37 +232,43 @@ const ServiceSettings = ({ data }: any) => {
             />
           </Box>
           <Box pl="16">
-          {service.components.map((component: any, componentIndex: number) => (
-            <Box
-              key={componentIndex}
-              w="542px"
-              h="12"
-              px="4"
-              py="3"
-              rounded="lg"
-              border="1px"
-              borderColor="gray.300"
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              mt="5px"
-              pl="16"
-            >
-              <Flex justify="flex-end" align="center">
-                <Text color="stone-950" fontSize="base" lineHeight="normal">
-                  {component.name}
-                </Text>
-              </Flex>
-              <Checkbox
-                isChecked={checkedItems.get(`${serviceIndex}-${componentIndex}`)}
-                onChange={() => toggleCheckbox(serviceIndex, componentIndex)}
-                w="6"
-                h="6"
-                position="relative"
-              />
-            </Box>
-          ))}
-            </Box>
+            {service.components.map(
+              (component: any, componentIndex: number) => (
+                <Box
+                  key={componentIndex}
+                  w="542px"
+                  h="12"
+                  px="4"
+                  py="3"
+                  rounded="lg"
+                  border="1px"
+                  borderColor="gray.300"
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mt="5px"
+                  pl="16"
+                >
+                  <Flex justify="flex-end" align="center">
+                    <Text color="stone-950" fontSize="base" lineHeight="normal">
+                      {component.name}
+                    </Text>
+                  </Flex>
+                  <Checkbox
+                    isChecked={checkedItems.get(
+                      `${serviceIndex}-${componentIndex}`
+                    )}
+                    onChange={() =>
+                      toggleCheckbox(serviceIndex, componentIndex)
+                    }
+                    w="6"
+                    h="6"
+                    position="relative"
+                  />
+                </Box>
+              )
+            )}
+          </Box>
         </Box>
       ))}
       <Divider my="15px" />
