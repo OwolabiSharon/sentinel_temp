@@ -1,0 +1,28 @@
+/* Global Styling here */
+:root {
+  font-weight: 400;
+}
+
+.onboarding-stepper-step {
+  gap: 0px !important;
+}
+
+.onboarding-stepper-seperator {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+}
+
+.onboarding-stepper-step-active {
+  color: var(--chakra-colors-brand-primary-900);
+  font-weight: 700;
+}
+
+.onboarding-stepper-step-undone {
+  color: var(--chakra-colors-brand-darkGray-800);
+  font-weight: 700;
+}
+
+.onboarding-stepper-step-done {
+  color: teal;
+  font-weight: 700;
+}
