@@ -17,9 +17,10 @@ import { IconMapping } from '~/lib/utils';
 type ServiceDetailsHeaderType = {
   name: string;
   link: string;
+  image_url: string
 };
 
-const ServiceDetailsHeader = ({ name, link }: ServiceDetailsHeaderType) => {
+const ServiceDetailsHeader = ({ name, link, image_url }: ServiceDetailsHeaderType) => {
   const [modalState, { on: showModal, off: closeModal }] = useBoolean(false);
   console.log(name, link);
   return (
@@ -36,7 +37,7 @@ const ServiceDetailsHeader = ({ name, link }: ServiceDetailsHeaderType) => {
           p={{ base: 4 }}
         >
           <Image
-            src={IconMapping[name?.toLowerCase()]}
+            src={image_url}
             width={{ base: 20 }}
             transform="scale(1.2)"
           />

@@ -39,7 +39,7 @@ const ServiceDetails = ({ data, cb }: ServiceDetailsProps) => {
           Dashboard home
         </Text>
       </TextLikeButton>
-      <ServiceDetailsHeader name={data.name} link={data.status_link} />
+      <ServiceDetailsHeader name={data.name} link={data.status_link} image_url= {data.icon_url} />
       <Flex
         wrap={{ base: 'wrap', md: 'unset' }}
         gap={{ base: 4 }}
