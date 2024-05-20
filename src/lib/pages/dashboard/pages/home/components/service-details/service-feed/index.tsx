@@ -5,6 +5,8 @@ import historySupabase from '../../../../../historySupabase';
 import { SectionTitle2 } from '~/lib/components/title';
 
 import OutageCard from './OutageCard'; // Import the OutageCard component
+import { motionValue } from 'framer-motion';
+import { format } from 'date-fns';
 
 type ServiceFeedProps = {
   service: any;
@@ -50,7 +52,7 @@ const ServiceFeed = ({ service }: ServiceFeedProps) => {
       interface SubProvider {
         name: string;
         status: string;
-        outages: { name: string; status: string }[];
+        details: { name: string; status: string , created_at: any}[];
       }
 
       const sub_providers: SubProvider[] = [];
@@ -59,6 +61,9 @@ const ServiceFeed = ({ service }: ServiceFeedProps) => {
       allData.forEach((item) => {
         const { name, status, created_at } = item;
 
+        const formattedDate = format(new Date(created_at), "MMMM do, yyyy 'at' h:mm a");
+        console.log(formattedDate);
+        
         // Check if sub-provider already exists in sub_providers array
         const existingProviderIndex = sub_providers.findIndex(
           (provider) => provider.name === name
@@ -69,11 +74,11 @@ const ServiceFeed = ({ service }: ServiceFeedProps) => {
           sub_providers.push({
             name,
             status,
-            outages: [],
+            details: [],
           });
         } else {
           // If sub-provider exists, update its status
-          sub_providers[existingProviderIndex].status = status;
+          sub_providers[existingProviderIndex].details.push({ name, status, created_at: formattedDate  }) ;
         }
       });
 
@@ -103,7 +108,7 @@ const ServiceFeed = ({ service }: ServiceFeedProps) => {
     >
       <SectionTitle2 mb={{ base: 2, md: 5 }}>Feed</SectionTitle2>
       {subProviders.map((value: any, index: any) => (
-        <OutageCard />
+        <OutageCard {...value}/>
       ))}
     </Box>
   );

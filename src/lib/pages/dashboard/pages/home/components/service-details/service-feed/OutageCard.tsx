@@ -1,7 +1,7 @@
 import { Box, Divider, Flex, Text, Spacer } from '@chakra-ui/react';
 
-const OutageCard = ({ title, severity, issues }: any) => {
-  console.log(issues);
+const OutageCard = ({ name, status, details }: any) => {
+  console.log(details);
 
   return (
     <Box
@@ -12,9 +12,7 @@ const OutageCard = ({ title, severity, issues }: any) => {
       justifyContent="flex-start"
       alignItems="flex-start"
     >
-      {issues.map((issue, index) => (
         <Box
-          key={index}
           w="100%"
           h="auto"
           py="2"
@@ -32,20 +30,20 @@ const OutageCard = ({ title, severity, issues }: any) => {
               fontSize={{ base: 'md', md: 'lg' }}
               lineHeight={{ base: '24px', md: '27px' }}
             >
-              {issue.title}
+              {name}
             </Text>
             <Spacer />
             <Flex justify="center" alignItems="flex-start">
               <Text
-                color={severity === 'major' ? 'red.500' : 'orange.500'}
+                color={status === 'Operational' ?  'green.500' : 'orange.500'}
                 fontSize="base"
                 lineHeight="tight"
               >
-                {severity === 'major' ? 'Major' : 'Minor'} Outage
+                {status}
               </Text>
             </Flex>
           </Flex>
-          {issue.details.map((detail, detailIndex) => (
+          {details.map((detail: any, detailIndex: any) => (
             <Flex
               key={detailIndex}
               justifyItems="between"
@@ -53,53 +51,53 @@ const OutageCard = ({ title, severity, issues }: any) => {
               w="100%"
             >
               <Text color="neutral.600" fontSize="base" lineHeight="tight">
-                {detail.description}
+                {detail.name} {detail.status}
               </Text>
               <Spacer />
               <Text color="zinc.500" fontSize="base" lineHeight="tight">
-                {detail.date}
+                {detail.created_at}
               </Text>
             </Flex>
           ))}
         </Box>
-      ))}
     </Box>
   );
 };
+ 
+export default OutageCard;
+// const issues = [
+//   {
+//     title: 'USSD went down',
+//     severity: 'minor',
+//     details: [
+//       { description: 'Outage has been resolved', date: '3 hours ago' },
+//       {
+//         description: 'Delay in USSD transactions processing',
+//         date: '4 hours ago',
+//       },
+//     ],
+//   },
+//   {
+//     title: 'Transfers went down',
+//     severity: 'major',
+//     details: [
+//       { description: 'Outage has been resolved', date: '7 days ago at 14:00' },
+//       { description: 'Delay in transfers', date: '7 days ago at 14:45' },
+//       { description: 'Downtime in transfers', date: '7 days ago at 15:00' },
+//     ],
+//   },
+//   // Add more issues as needed
+// ];
 
-const issues = [
-  {
-    title: 'USSD went down',
-    severity: 'minor',
-    details: [
-      { description: 'Outage has been resolved', date: '3 hours ago' },
-      {
-        description: 'Delay in USSD transactions processing',
-        date: '4 hours ago',
-      },
-    ],
-  },
-  {
-    title: 'Transfers went down',
-    severity: 'major',
-    details: [
-      { description: 'Outage has been resolved', date: '7 days ago at 14:00' },
-      { description: 'Delay in transfers', date: '7 days ago at 14:45' },
-      { description: 'Downtime in transfers', date: '7 days ago at 15:00' },
-    ],
-  },
-  // Add more issues as needed
-];
+// const App = () => {
+//   return (
+    
+//       <OutageCard issues={issues} />
+    
+//   );
+// };
 
-const App = () => {
-  return (
-    <Flex direction="column" alignItems="center">
-      <OutageCard issues={issues} />
-    </Flex>
-  );
-};
-
-export default App;
+// export default App;
 
 // const dateString = '2020-05-14T04:00:00Z'
 
